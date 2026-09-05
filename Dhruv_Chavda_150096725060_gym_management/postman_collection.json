@@ -1,0 +1,265 @@
+{
+  "info": {
+    "_postman_id": "c85d7621-e054-4340-9a4f-9e73b22b1099",
+    "name": "Gym & Fitness Club Management REST API (Assignment 08)",
+    "description": "Complete Postman collection for Gym & Fitness Management API featuring Passport-Local authentication, Class Booking with capacity limits, and Membership renewals.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "classId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "memberId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Base & Health",
+      "item": [
+        {
+          "name": "API Base Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication (Passport Local)",
+      "item": [
+        {
+          "name": "Register Member (Gold - 3 Months)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.user && jsonData.user._id) {",
+                  "    pm.collectionVariables.set('memberId', jsonData.user._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"fit_sam\",\n  \"email\": \"sam@fit.com\",\n  \"password\": \"mypassword123\",\n  \"membershipTier\": \"Gold\",\n  \"durationMonths\": 3,\n  \"emergencyContact\": \"+1-555-0199\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Member",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"fit_sam\",\n  \"password\": \"mypassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Logout Member",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Fitness Classes & Booking",
+      "item": [
+        {
+          "name": "Create Fitness Class",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.fitnessClass && jsonData.fitnessClass._id) {",
+                  "    pm.collectionVariables.set('classId', jsonData.fitnessClass._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Zumba Cardio Blitz\",\n  \"trainerName\": \"Maria Rodriguez\",\n  \"scheduleDate\": \"2026-05-15T09:00:00.000Z\",\n  \"durationMinutes\": 60,\n  \"maxCapacity\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/classes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "classes"]
+            }
+          }
+        },
+        {
+          "name": "List All Classes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "classes"]
+            }
+          }
+        },
+        {
+          "name": "Filter Classes by Trainer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes?trainer=Maria",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "classes"],
+              "query": [
+                {
+                  "key": "trainer",
+                  "value": "Maria"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Class Details by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/{{classId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "classes", "{{classId}}"]
+            }
+          }
+        },
+        {
+          "name": "Book Class Slot (Protected)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/{{classId}}/book",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "classes", "{{classId}}", "book"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Class Booking (Protected)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/classes/{{classId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "classes", "{{classId}}", "cancel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Membership Management",
+      "item": [
+        {
+          "name": "Renew Membership",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"additionalMonths\": 6,\n  \"tier\": \"Platinum\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/members/{{memberId}}/renew",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "members", "{{memberId}}", "renew"]
+            }
+          }
+        },
+        {
+          "name": "Get Expired Members List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/members/expired",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "members", "expired"]
+            }
+          }
+        },
+        {
+          "name": "List All Members",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "members"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
