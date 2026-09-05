@@ -3,6 +3,8 @@
 > **Tech Stack:** Node.js, Express.js, MongoDB, Mongoose, Passport.js (Local Strategy), Express-Session, dotenv
 
 ---
+### Live Link : https://assignment-8-gym-management-api.onrender.com/
+---
 
 ## 📌 1. Objective & Overview
 
